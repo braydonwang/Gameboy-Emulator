@@ -1,10 +1,7 @@
-
 <h1 align="center">Gameboy Emulator</h1>
 <p align="center">Description of project</p>
 
 <!-- ABOUT THE PROJECT -->
-
-test
 
 ## About The Project
 
@@ -13,11 +10,11 @@ test
 
 ### Features:
 
-- 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
+-
 
 ### Built With
 
@@ -29,13 +26,12 @@ What tools did we use to build it with
 
 What are the steps to run this project locally?
 
-1. 
-2. 
-3. 
-4. 
-5. 
-6. 
-
+1.
+2.
+3.
+4.
+5.
+6.
 
 ## Inside Look
 
