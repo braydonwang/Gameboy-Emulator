@@ -1,10 +1,6 @@
-<a name="readme-top"></a>
 
-<!-- PROJECT LOGO -->
-<br />
-  <h1 align="center">Gameboy Emulator</h1>
-  <p align="center">Description of project</p>
-</div>
+<h1 align="center">Gameboy Emulator</h1>
+<p align="center">Description of project</p>
 
 <!-- ABOUT THE PROJECT -->
 
