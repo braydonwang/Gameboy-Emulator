@@ -4,6 +4,7 @@
     "common.h": "c",
     "sdl.h": "c",
     "rom_types.h": "c",
-    "lic_codes.h": "c"
+    "lic_codes.h": "c",
+    "cstdio": "c"
   }
 }
