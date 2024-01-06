@@ -1,6 +1,9 @@
 {
   "files.associations": {
     "emu.h": "c",
-    "common.h": "c"
+    "common.h": "c",
+    "sdl.h": "c",
+    "rom_types.h": "c",
+    "lic_codes.h": "c"
   }
 }

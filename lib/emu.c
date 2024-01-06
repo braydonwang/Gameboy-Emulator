@@ -12,7 +12,7 @@
     |Cart|
     |CPU|
     |Address Bus|
-    |Pixel Processing Unit|
+    |Pixel Processing Unit (PPU)|
     |Timer|
 
 */

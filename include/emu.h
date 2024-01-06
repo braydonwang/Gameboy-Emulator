@@ -5,7 +5,7 @@
 
 typedef struct {
     bool paused;
-    bool runnning;
+    bool running;
     u64 ticks;
 } emu_context;
 
