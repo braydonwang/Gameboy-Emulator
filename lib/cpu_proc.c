@@ -1,7 +1,7 @@
 #include <cpu.h>
 #include <emu.h>
 
-// Processes CPU instructionss...
+// Processes CPU instructions...
 
 // None instruction
 static void proc_none(cpu_context *ctx) {
@@ -9,7 +9,7 @@ static void proc_none(cpu_context *ctx) {
     exit(-7);
 }
 
-// Nop instruction
+// NOP instruction
 static void proc_nop(cpu_context *ctx) {
 
 }
@@ -43,7 +43,7 @@ void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
     }
 }
 
-// Xor instruction
+// XOR instruction
 static void proc_xor(cpu_context *ctx) {
     ctx->regs.a ^= ctx->fetched_data & 0xFF;    // XOR reg A and fetched data
     cpu_set_flags(ctx, ctx->regs.a, 0, 0, 0);   // sets flags to (Z 0 0 0)
