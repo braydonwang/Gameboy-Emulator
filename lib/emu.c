@@ -3,7 +3,7 @@
 #include <cart.h>
 #include <cpu.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include </Library/Frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h>
 
 /*
 

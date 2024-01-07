@@ -20,5 +20,5 @@ if(DEBIAN)
 endif()
 
 if (WIN32)
-target_include_directories(emu PUBLIC ${PROJECT_SOURCE_DIR}/../windows_deps/check )
+target_include_directories(emu PUBLIC ${PROJECT_SOURCE_DIR}/windows_deps/check )
 endif()
