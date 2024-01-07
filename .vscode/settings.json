@@ -10,6 +10,7 @@
     "check_stdint.h": "c",
     "sdl_ttf.h": "c",
     "stdio.h": "c",
-    "cpu.h": "c"
+    "cpu.h": "c",
+    "bus.h": "c"
   }
 }
