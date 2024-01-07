@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/windows_deps/check",
                 "${workspaceFolder}/windows_deps/sdl2/include",
-                "${workspaceFolder}/windows_deps/sdl2_ttf/include"
+                "${workspaceFolder}/windows_deps/sdl2_ttf/include",
+                "${workspaceFolder}/windows_deps/sdl2/include/SDL2"
             ],
             "defines": [],
             "macFrameworkPath": [
