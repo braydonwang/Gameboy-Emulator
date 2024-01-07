@@ -126,4 +126,6 @@ typedef struct {
 
 instruction *instruction_by_opcode(u8 opcode);
 
+char *inst_name(in_type t);
+
 #endif /* __INSTRUCTIONS_H__ */
