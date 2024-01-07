@@ -22,6 +22,8 @@ instruction *instruction_by_opcode(u8 opcode) {
     return &instructions[opcode];
 }
 
+// String value of all CPU instruction names
+// Reference: https://gbdev.io/pandocs/CPU_Instruction_Set.html
 char *inst_lookup[] = {
     "<NONE>",
     "NOP",
