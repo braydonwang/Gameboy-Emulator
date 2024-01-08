@@ -10,9 +10,7 @@ static void proc_none(cpu_context *ctx) {
 }
 
 // NOP instruction
-static void proc_nop(cpu_context *ctx) {
-
-}
+static void proc_nop(cpu_context *ctx) {}
 
 // Disable interrupts instruction
 static void proc_di(cpu_context *ctx) {
@@ -65,7 +63,7 @@ static bool check_cond(cpu_context *ctx) {
     return false;
 }
 
-// Jump instruction
+// Jump instruction with conditions
 static void proc_jp(cpu_context *ctx) {
     if (check_cond(ctx)) {
         ctx->regs.pc = ctx->fetched_data;       // set pc to jump address
