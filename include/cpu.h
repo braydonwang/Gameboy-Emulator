@@ -13,25 +13,35 @@ typedef struct {
     u8 e;
     u8 h;
     u8 l;
-    u16 pc;                 // program counter
-    u16 sp;                 // stack pointer
+    u16 pc;                  // program counter
+    u16 sp;                  // stack pointer
 } cpu_registers;
 
 typedef struct {
     cpu_registers regs;
-    u16 fetched_data;       // currently fetched data
-    u16 mem_dest;           // memory destination
-    bool dest_is_mem;       // true if destination is memory location
-    u8 cur_opcode;          // current operation code
-    instruction *cur_inst;  // current instruction
+    u16 fetched_data;        // currently fetched data
+    u16 mem_dest;            // memory destination
+    bool dest_is_mem;        // true if destination is memory location
+    u8 cur_opcode;           // current operation code
+    instruction *cur_inst;   // current instruction
 
     bool halted;
     bool stepping;
+
+    bool int_master_enabled; // true if master interrupt is enabled
+
 } cpu_context;
 
 void cpu_init();
 bool cpu_step();
 
 u16 cpu_read_reg(reg_type rt);
+
+typedef void (*IN_PROC)(cpu_context *);
+
+IN_PROC inst_get_processor(in_type type);
+
+#define CPU_FLAG_Z BIT(ctx->regs.f, 7)
+#define CPU_FLAG_C BIT(ctx->regs.f, 4)
 
 #endif /* __CPU_H__ */
