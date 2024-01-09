@@ -33,5 +33,6 @@ void cpu_init();
 bool cpu_step();
 
 u16 cpu_read_reg(reg_type rt);
+void cpu_set_reg(reg_type rt, u16 val);
 
 #endif /* __CPU_H__ */
