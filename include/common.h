@@ -15,7 +15,7 @@ typedef uint64_t u64;
 #define BIT(a, n) ((a & (1 << n)) ? 1 : 0)
 
 // Sets the nth bit of a to on (0 or 1)
-#define BIT_SET(a, n, on) (on ? (a) |= (1 << n) : (a) &= ~(1 << n))
+#define BIT_SET(a, n, on) { if (on) a |= (1 << n); else a &= ~(1 << n);}
 
 // Checks if value of a is between b and c
 #define BETWEEN(a, b, c) ((a >= b) && (a <= c))
