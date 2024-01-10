@@ -5,6 +5,7 @@
 // Reference: https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 
 instruction instructions[0x100] = {
+    /* --------------- 0x0X --------------- */
     [0x00] = {IN_NOP, AM_IMP},
     [0x01] = {IN_LD, AM_R_D16, RT_BC},
     [0x02] = {IN_LD, AM_MR_R, RT_BC, RT_A},
@@ -18,7 +19,7 @@ instruction instructions[0x100] = {
 
     [0x0E] = {IN_LD, AM_R_D8, RT_C},
 
-    // 0x1X
+    /* --------------- 0x1X --------------- */
     [0x11] = {IN_LD, AM_R_D16, RT_DE},
     [0x12] = {IN_LD, AM_MR_R, RT_DE, RT_A},
     [0x15] = {IN_DEC, AM_R, RT_D},
@@ -26,7 +27,7 @@ instruction instructions[0x100] = {
     [0x1A] = {IN_LD, AM_R_MR, RT_A, RT_DE},
     [0x1E] = {IN_LD, AM_R_D8, RT_E},
 
-    // 0x2X
+    /* --------------- 0x2X --------------- */
     [0x21] = {IN_LD, AM_R_D16, RT_HL},
     [0x22] = {IN_LD, AM_HLI_R, RT_HL, RT_A},
     [0x25] = {IN_DEC, AM_R, RT_H},
@@ -34,15 +35,15 @@ instruction instructions[0x100] = {
     [0x2A] = {IN_LD, AM_R_HLI, RT_A, RT_HL},
     [0x2E] = {IN_LD, AM_R_D8, RT_L},
 
-    // 0x3X
+    /* --------------- 0x3X --------------- */
     [0x31] = {IN_LD, AM_R_D16, RT_SP},
     [0x32] = {IN_LD, AM_HLD_R, RT_HL, RT_A},
-    [0x35] = {IN_DEC, AM_R, RT_HL},
+    [0x35] = {IN_DEC, AM_MR, RT_HL},
     [0x36] = {IN_LD, AM_MR_D8, RT_HL},
     [0x3A] = {IN_LD, AM_R_HLD, RT_A, RT_HL},
     [0x3E] = {IN_LD, AM_R_D8, RT_A},
 
-    // 0x4X
+    /* --------------- 0x4X --------------- */
     [0x40] = {IN_LD, AM_R_R, RT_B, RT_B},
     [0x41] = {IN_LD, AM_R_R, RT_B, RT_C},
     [0x42] = {IN_LD, AM_R_R, RT_B, RT_D},
@@ -60,7 +61,7 @@ instruction instructions[0x100] = {
     [0x4E] = {IN_LD, AM_R_MR, RT_C, RT_HL},
     [0x4F] = {IN_LD, AM_R_R, RT_C, RT_A},
 
-    // 0x5X
+    /* --------------- 0x5X --------------- */
     [0x50] = {IN_LD, AM_R_R,  RT_D, RT_B},
     [0x51] = {IN_LD, AM_R_R,  RT_D, RT_C},
     [0x52] = {IN_LD, AM_R_R,  RT_D, RT_D},
@@ -78,7 +79,7 @@ instruction instructions[0x100] = {
     [0x5E] = {IN_LD, AM_R_MR, RT_E, RT_HL},
     [0x5F] = {IN_LD, AM_R_R,  RT_E, RT_A},
 
-    // 0x6X
+    /* --------------- 0x6X --------------- */
     [0x60] = {IN_LD, AM_R_R,  RT_H, RT_B},
     [0x61] = {IN_LD, AM_R_R,  RT_H, RT_C},
     [0x62] = {IN_LD, AM_R_R,  RT_H, RT_D},
@@ -96,7 +97,7 @@ instruction instructions[0x100] = {
     [0x6E] = {IN_LD, AM_R_MR, RT_L, RT_HL},
     [0x6F] = {IN_LD, AM_R_R,  RT_L, RT_A},
 
-    // 0x7X
+    /* --------------- 0x7X --------------- */
     [0x70] = {IN_LD, AM_MR_R,  RT_HL, RT_B},
     [0x71] = {IN_LD, AM_MR_R,  RT_HL, RT_C},
     [0x72] = {IN_LD, AM_MR_R,  RT_HL, RT_D},
@@ -118,11 +119,11 @@ instruction instructions[0x100] = {
 
     [0xC3] = {IN_JP, AM_D16},
 
-    // 0xEX
+    /* --------------- 0xEX --------------- */
     [0xE2] = {IN_LD, AM_MR_R, RT_C, RT_A},
     [0xEA] = {IN_LD, AM_A16_R, RT_NONE, RT_A},
 
-    // 0xFX
+    /* --------------- 0xFX --------------- */
     [0xF2] = {IN_LD, AM_R_MR, RT_A, RT_C},
     [0xF3] = {IN_DI},
     [0xFA] = {IN_LD, AM_R_A16, RT_A},

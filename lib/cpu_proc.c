@@ -2,7 +2,9 @@
 #include <emu.h>
 #include <bus.h>
 
-// Processes CPU instructions...
+/*
+    Processing CPU Instructions
+*/
 
 // None instruction
 static void proc_none(cpu_context *ctx) {
@@ -40,10 +42,7 @@ void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
 // Load instruction
 static void proc_ld(cpu_context *ctx) {
     if (ctx->dest_is_mem) {
-        
-        //LD (BC), A for instance...
-        if (ctx->cur_inst->reg_2 >= RT_AF) {
-            // if 16 bit register...
+        if (ctx->cur_inst->reg_2 >= RT_AF) {   // in the form: LD (BC), A (and 16-bit register)
             emu_cycles(1);
             bus_write16(ctx->mem_dest, ctx->fetched_data);
         } else {
@@ -53,7 +52,7 @@ static void proc_ld(cpu_context *ctx) {
         return;
     }
 
-    if (ctx->cur_inst->mode == AM_HL_SPR) { // special case
+    if (ctx->cur_inst->mode == AM_HL_SPR) {   // special case
         u8 hflag = (cpu_read_reg(ctx->cur_inst->reg_2) & 0xF) + 
             (ctx->fetched_data & 0xF) >= 0x10;
 

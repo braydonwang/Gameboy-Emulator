@@ -21,6 +21,7 @@ void fetch_data() {
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_1);
             return;
         
+        // Read data from register 2
         case AM_R_R:
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             return;
@@ -69,8 +70,8 @@ void fetch_data() {
 
             ctx.fetched_data = bus_read(addr);
             emu_cycles(1);
-
-        } return;
+            return;
+        }
 
         // Loading address of HL register then increment by 1
         case AM_R_HLI:
@@ -86,7 +87,7 @@ void fetch_data() {
             cpu_set_reg(RT_HL, cpu_read_reg(RT_HL) - 1);
             return;
 
-        // Load register value into HL register
+        // Load register value into HL register, then increment HL by 1
         case AM_HLI_R:
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             ctx.mem_dest = cpu_read_reg(ctx.cur_inst->reg_1);
@@ -94,7 +95,7 @@ void fetch_data() {
             cpu_set_reg(RT_HL, cpu_read_reg(RT_HL) + 1);
             return;
         
-        // Load register value into HL register
+        // Load register value into HL register, , then decrement HL by 1
         case AM_HLD_R:
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             ctx.mem_dest = cpu_read_reg(ctx.cur_inst->reg_1);
@@ -124,7 +125,7 @@ void fetch_data() {
             ctx.regs.pc++;
             return;
         
-        // 
+        // Read data from 8-bit value
         case AM_D8:
             ctx.fetched_data = bus_read(ctx.regs.pc);
             emu_cycles(1);
@@ -145,8 +146,8 @@ void fetch_data() {
 
             ctx.regs.pc += 2;
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
-            
-        } return;
+            return;
+        }
 
         // Load D8 into memory register
         case AM_MR_D8:

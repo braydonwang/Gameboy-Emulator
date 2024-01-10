@@ -30,7 +30,8 @@ u16 cpu_read_reg(reg_type rt) {
     }
 }
 
-// Takes in register type and value
+// Takes in register type and value, sets specified register to value
+// (take last 8 bits for 8-bit registers, reverse bits for 16-bit registers)
 void cpu_set_reg(reg_type rt, u16 val) {
     switch(rt) {
         case RT_A: ctx.regs.a = val & 0xFF; break;
