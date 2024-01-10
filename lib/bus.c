@@ -1,6 +1,7 @@
 #include <bus.h>
 #include <cart.h>
 #include <ram.h>
+#include <cpu.h>
 
 /*
     Memory Map Addresses
@@ -53,13 +54,11 @@ u8 bus_read(u16 address) {
         printf("UNSUPPORTED bus_read(%04X)\n", address);
         NO_IMPL
     } else if (address == 0xFFFF) {
-        // CPU Enable Register
-        // TODO
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
-        NO_IMPL
+        // Interrupt Enable Register (IE)
+        return cpu_get_ie_register();
     }
 
-    // Zero Page (also known as High RAM)
+    // Zero Page or High RAM (HRAM)
     return hram_read(address);
 }
 
@@ -92,13 +91,12 @@ void bus_write(u16 address, u8 value) {
         // I/O Registers
         // TODO
         printf("UNSUPPORTED bus_write(%04X)\n", address);
-        NO_IMPL
+        // NO_IMPL
     } else if (address == 0xFFFF) {
-        // CPU Set Enable Register
-        // TODO
-        printf("UNSUPPORTED bus_write(%04X)\n", address);
-        NO_IMPL
+        // Interrupt Enable Register (IE)
+        cpu_set_ie_register(value);
     } else {
+        // Zero Page or High RAM (HRAM)
         hram_write(address, value);
     }
 }
