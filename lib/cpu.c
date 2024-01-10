@@ -14,7 +14,6 @@ static void fetch_instruction() {
     ctx.cur_opcode = bus_read(ctx.regs.pc++);
     // Get current instruction based on op code
     ctx.cur_inst = instruction_by_opcode(ctx.cur_opcode);
-
 }
 
 static void execute() {
