@@ -8,6 +8,10 @@ void fetch_data() {
     ctx.mem_dest = 0;
     ctx.dest_is_mem = false;
 
+    if (ctx.cur_inst == NULL) {
+        return;
+    }
+
     switch(ctx.cur_inst->mode) {
         case AM_IMP: 
             return;
@@ -15,6 +19,10 @@ void fetch_data() {
         // Read data from register 1
         case AM_R:
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_1);
+            return;
+        
+        case AM_R_R:
+            ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             return;
 
         // Read data from 8-bit value
@@ -54,7 +62,7 @@ void fetch_data() {
         case AM_R_MR: {
             u16 addr = cpu_read_reg(ctx.cur_inst->reg_2);
 
-            if (ctx.cur_inst->reg_1 == RT_C) { // carry flag register
+            if (ctx.cur_inst->reg_2 == RT_C) { // carry flag register
                 addr |= 0xFF00; // write to C the MSO of 0xFF00
             }
 
