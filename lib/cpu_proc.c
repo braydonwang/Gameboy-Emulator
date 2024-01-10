@@ -18,11 +18,6 @@ static void proc_di(cpu_context *ctx) {
     ctx->int_master_enabled = false;
 }
 
-// Load instruction
-static void proc_ld(cpu_context *ctx) {
-    //TODO...
-}
-
 // Sets flag bits
 void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
     if (z != -1) {
@@ -40,20 +35,6 @@ void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
     if (c != -1) {
         BIT_SET(ctx->regs.f, 4, c);
     }
-}
-
-// None instruction
-static void proc_none(cpu_context *ctx) {
-    printf("INVALID INSTRUCTION!\n");
-    exit(-7);
-}
-
-// NOP instruction
-static void proc_nop(cpu_context *ctx) {}
-
-// Disable interrupts instruction
-static void proc_di(cpu_context *ctx) {
-    ctx->int_master_enabled = false;
 }
 
 // Load instruction
