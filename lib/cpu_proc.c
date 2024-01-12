@@ -102,6 +102,8 @@ static bool check_cond(cpu_context *ctx) {
     return false;
 }
 
+
+
 // Jump instruction with conditions
 static void proc_jp(cpu_context *ctx) {
     if (check_cond(ctx)) {
@@ -110,6 +112,7 @@ static void proc_jp(cpu_context *ctx) {
     }
 }
 
+// Pop instruction
 static void proc_pop(cpu_context *ctx) {
     u16 lo = stack_pop();
     emu_cycles(1);
@@ -124,6 +127,8 @@ static void proc_pop(cpu_context *ctx) {
     }
 }
 
+
+// Push instruction
 static void proc_push(cpu_context *ctx) {
     u16 hi = (cpu_read_reg(ctx->cur_inst->reg_1) >> 8) & 0xFF;
     emu_cycles(1);
