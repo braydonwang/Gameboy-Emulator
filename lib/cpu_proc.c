@@ -130,6 +130,30 @@ static void proc_call(cpu_context *ctx) {
     goto_addr(ctx, ctx->fetched_data, true);
 }
 
+// Return instruction
+static void proc_ret(cpu_context *ctx) {
+    if (ctx->cur_inst->cond != CT_NONE) {
+        emu_cycles(1);
+    }
+
+    if (check_cond(ctx)) {
+        u16 lo = stack_pop();
+        emu_cycles(1);
+        u16 hi = stack_pop();
+        emu_cycles(1);
+
+        u16 n = (hi << 8) | lo;
+        ctx->regs.pc = n;                   // set pc to value on stack
+        emu_cycles(1);
+    }
+}
+
+// Return interrupt instruction
+static void proc_reti(cpu_context *ctx) {
+    ctx->int_master_enabled = true;
+    proc_ret(ctx);
+}
+
 // Pop instruction
 static void proc_pop(cpu_context *ctx) {
     u16 lo = stack_pop();
@@ -170,6 +194,8 @@ static IN_PROC processors[] = {
     [IN_PUSH] = proc_push,
     [IN_JR] = proc_jr,
     [IN_CALL] = proc_call,
+    [IN_RET] = proc_ret,
+    [IN_RETI] = proc_reti,
     [IN_XOR] = proc_xor
 };
 
