@@ -130,6 +130,11 @@ static void proc_call(cpu_context *ctx) {
     goto_addr(ctx, ctx->fetched_data, true);
 }
 
+// Restart instruction
+static void proc_rst(cpu_context *ctx) {
+    goto_addr(ctx, ctx->cur_inst->param, true);
+}
+
 // Return instruction
 static void proc_ret(cpu_context *ctx) {
     if (ctx->cur_inst->cond != CT_NONE) {
@@ -196,6 +201,7 @@ static IN_PROC processors[] = {
     [IN_CALL] = proc_call,
     [IN_RET] = proc_ret,
     [IN_RETI] = proc_reti,
+    [IN_RST] = proc_rst,
     [IN_XOR] = proc_xor
 };
 
