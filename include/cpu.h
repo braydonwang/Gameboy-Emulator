@@ -33,6 +33,8 @@ typedef struct {
 
 } cpu_context;
 
+cpu_registers *cpu_get_regs();
+
 void cpu_init();
 bool cpu_step();
 
