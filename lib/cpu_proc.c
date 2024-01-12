@@ -102,14 +102,32 @@ static bool check_cond(cpu_context *ctx) {
     return false;
 }
 
-
-
-// Jump instruction with conditions
-static void proc_jp(cpu_context *ctx) {
-    if (check_cond(ctx)) {
-        ctx->regs.pc = ctx->fetched_data;      // set pc to jump address
+static void goto_addr(cpu_context *ctx, u16 addr, bool pushpc) {
+    if (check_cond(ctx)) {                     // checking if conditional flag is met
+        if (pushpc) {                          // push pc to stack
+            emu_cycles(2);
+            stack_push16(ctx->regs.pc);
+        }
+        ctx->regs.pc = addr;                   // set pc to address
         emu_cycles(1);
     }
+}
+
+// Jump instruction
+static void proc_jp(cpu_context *ctx) {
+    goto_addr(ctx, ctx->fetched_data, false);
+}
+
+// Jump relative instruction
+static void proc_jr(cpu_context *ctx) {
+    char rel = (char)(ctx->fetched_data & 0xFF);   // casting to char because relative jump may be negative
+    u16 addr = ctx->regs.pc + rel;
+    goto_addr(ctx, addr, false);
+}
+
+// Call instruction
+static void proc_call(cpu_context *ctx) {
+    goto_addr(ctx, ctx->fetched_data, true);
 }
 
 // Pop instruction
@@ -150,6 +168,8 @@ static IN_PROC processors[] = {
     [IN_DI] = proc_di,
     [IN_POP] = proc_pop,
     [IN_PUSH] = proc_push,
+    [IN_JR] = proc_jr,
+    [IN_CALL] = proc_call,
     [IN_XOR] = proc_xor
 };
 
