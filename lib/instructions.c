@@ -115,19 +115,31 @@ instruction instructions[0x100] = {
     [0x7E] = {IN_LD, AM_R_MR, RT_A, RT_HL},
     [0x7F] = {IN_LD, AM_R_R,  RT_A, RT_A},
 
+    /* --------------- 0xAX --------------- */
     [0xAF] = {IN_XOR, AM_R, RT_A},
 
+    /* --------------- 0xCX --------------- */
+    [0xC1] = {IN_POP, AM_IMP, RT_BC},
     [0xC3] = {IN_JP, AM_D16},
+    [0xC5] = {IN_PUSH, AM_R, RT_BC},
+
+    /* --------------- 0xDX --------------- */
+    [0xD1] = {IN_POP, AM_IMP, RT_DE},
+    [0xD5] = {IN_PUSH, AM_R, RT_DE},
 
     /* --------------- 0xEX --------------- */
     [0xE0] = {IN_LDH, AM_A8_R, RT_NONE, RT_A},
+    [0xE1] = {IN_POP, AM_IMP, RT_HL},
     [0xE2] = {IN_LD, AM_MR_R, RT_C, RT_A},
+    [0xE5] = {IN_PUSH, AM_R, RT_HL},
     [0xEA] = {IN_LD, AM_A16_R, RT_NONE, RT_A},
 
     /* --------------- 0xFX --------------- */
     [0xF0] = {IN_LDH, AM_R_A8, RT_A},
+    [0xF1] = {IN_POP, AM_IMP, RT_AF},
     [0xF2] = {IN_LD, AM_R_MR, RT_A, RT_C},
     [0xF3] = {IN_DI},
+    [0xF5] = {IN_PUSH, AM_R, RT_AF},
     [0xFA] = {IN_LD, AM_R_A16, RT_A},
 };
 
