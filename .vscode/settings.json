@@ -11,6 +11,7 @@
     "sdl_ttf.h": "c",
     "stdio.h": "c",
     "cpu.h": "c",
-    "bus.h": "c"
+    "bus.h": "c",
+    "ios": "c"
   }
 }
