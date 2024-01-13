@@ -39,6 +39,7 @@ bool cpu_step() {
 
         fetch_data();
 
+        // Current instruction flags
         char flags[16];
         sprintf(flags, "%c%c%c%c", 
             ctx.regs.f & (1 << 7) ? 'Z' : '-',

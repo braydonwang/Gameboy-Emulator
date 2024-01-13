@@ -197,11 +197,11 @@ static void proc_push(cpu_context *ctx) {
 static void proc_inc(cpu_context *ctx) {
     u16 val = cpu_read_reg(ctx->cur_inst->reg_1) + 1;
 
-    if (is_16_bit(ctx->cur_inst->reg_1)) {
+    if (is_16_bit(ctx->cur_inst->reg_1)) {          // 16 bit inc
         emu_cycles(1);
     }
 
-    if (ctx->cur_inst->reg_1 == RT_HL && ctx->cur_inst->mode == AM_MR) {
+    if (ctx->cur_inst->reg_1 == RT_HL && ctx->cur_inst->mode == AM_MR) {        // inc memory value at register address instead of register value
         val = bus_read(cpu_read_reg(RT_HL)) + 1;
         val &= 0xFF;
         bus_write(cpu_read_reg(RT_HL), val);
@@ -210,7 +210,7 @@ static void proc_inc(cpu_context *ctx) {
         val = cpu_read_reg(ctx->cur_inst->reg_1);
     }
 
-    if ((ctx->cur_opcode & 0x03) == 0x03) {
+    if ((ctx->cur_opcode & 0x03) == 0x03) {         // 0x3 do not change flags
         return;
     }
 
@@ -221,11 +221,11 @@ static void proc_inc(cpu_context *ctx) {
 static void proc_dec(cpu_context *ctx) {
     u16 val = cpu_read_reg(ctx->cur_inst->reg_1) - 1;
 
-    if (is_16_bit(ctx->cur_inst->reg_1)) {
+    if (is_16_bit(ctx->cur_inst->reg_1)) {          // 16 bit dec
         emu_cycles(1);
     }
 
-    if (ctx->cur_inst->reg_1 == RT_HL && ctx->cur_inst->mode == AM_MR) {
+    if (ctx->cur_inst->reg_1 == RT_HL && ctx->cur_inst->mode == AM_MR) {        // dec memory value at register address instead of register value
         val = bus_read(cpu_read_reg(RT_HL)) - 1;
         bus_write(cpu_read_reg(RT_HL), val);
     } else{
@@ -233,7 +233,7 @@ static void proc_dec(cpu_context *ctx) {
         val = cpu_read_reg(ctx->cur_inst->reg_1);
     }
 
-    if ((ctx->cur_opcode & 0x0B) == 0x0B) {
+    if ((ctx->cur_opcode & 0x0B) == 0x0B) {         // 0xB do not change flags
         return;
     }
 
@@ -242,7 +242,7 @@ static void proc_dec(cpu_context *ctx) {
 
 // Sub instruction
 static void proc_sub(cpu_context *ctx) {
-    u16 val = cpu_read_reg(ctx->cur_inst->reg_1) - ctx->fetched_data;
+    u16 val = cpu_read_reg(ctx->cur_inst->reg_1) - ctx->fetched_data;       // subtract reg value by literal value
     
     int z = val == 0;
     int h = ((int)cpu_read_reg(ctx->cur_inst->reg_1) & 0xF) - ((int)ctx->fetched_data & 0xF) < 0;
@@ -254,7 +254,7 @@ static void proc_sub(cpu_context *ctx) {
 
 // Sbc instruction
 static void proc_sbc(cpu_context *ctx) {
-    u8 val = ctx->fetched_data + CPU_FLAG_C;
+    u8 val = ctx->fetched_data + CPU_FLAG_C;        // subtracted value is literal plus carry bit
 
     int z = cpu_read_reg(ctx->cur_inst->reg_1) - val == 0;
 
@@ -273,7 +273,7 @@ static void proc_adc(cpu_context *ctx) {
     u16 a = ctx->regs.a;
     u16 c = CPU_FLAG_C;
 
-    ctx->regs.a = (a + u + c) & 0xFF;
+    ctx->regs.a = (a + u + c) & 0xFF;           // add literal and carry bit to the a reg
 
     cpu_set_flags(ctx, ctx->regs.a == 0, 0,
         (a & 0xF) + (u & 0xF) + c > 0xF,
@@ -282,30 +282,31 @@ static void proc_adc(cpu_context *ctx) {
 
 // Add instruction
 static void proc_add(cpu_context *ctx) {
-    u32 val = cpu_read_reg(ctx->cur_inst->reg_1) + ctx->fetched_data;
+    u32 val = cpu_read_reg(ctx->cur_inst->reg_1) + ctx->fetched_data;       // add reg value and literal
 
     bool is_16bit = is_16_bit(ctx->cur_inst->reg_1);
 
-    if (is_16bit) {
+    if (is_16bit) {         // 16 bit add
         emu_cycles(1);
     }
 
-    if (ctx->cur_inst->reg_1 == RT_SP) {
-        val = cpu_read_reg(ctx->cur_inst->reg_1) + (char)ctx->fetched_data;
+    if (ctx->cur_inst->reg_1 == RT_SP) {            
+        val = cpu_read_reg(ctx->cur_inst->reg_1) + (char)ctx->fetched_data;         // casting to char because literal may be negative
     }
 
+    // 8 bit add
     int z = (val & 0xFF) == 0;
     int h = (cpu_read_reg(ctx->cur_inst->reg_1) & 0xF) + (ctx->fetched_data & 0xF) >= 0x10;
     int c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) >= 0x100;
 
-    if (is_16bit) {
+    if (is_16bit) {         // 16 bit add
         z = -1;
         h = (cpu_read_reg(ctx->cur_inst->reg_1) & 0xFFF) + (ctx->fetched_data & 0xFFF) >= 0x1000;
         u32 n = ((u32)cpu_read_reg(ctx->cur_inst->reg_1)) + ((u32)ctx->fetched_data);
         c = n >= 0x10000;
     }
 
-    if (ctx->cur_inst->reg_1 == RT_SP) {
+    if (ctx->cur_inst->reg_1 == RT_SP) {            // stack pointer treated as 8 bit add
         z = 0;
         h = (cpu_read_reg(ctx->cur_inst->reg_1) & 0xF) + (ctx->fetched_data & 0xF) >= 0x10;
         c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) > 0x100;
