@@ -49,7 +49,7 @@ bool cpu_step() {
         );
 
         // Current instruction logger
-        printf("%08lX - %04X: %-7s (%02X %02X %02X) A: %02X F: %s BC: %02X%02X DE: %02X%02X HL: %02X%02X\n", 
+        printf("%08llX - %04X: %-7s (%02X %02X %02X) A: %02X F: %s BC: %02X%02X DE: %02X%02X HL: %02X%02X\n", 
             emu_get_context()->ticks,
             pc, inst_name(ctx.cur_inst->type), ctx.cur_opcode,
             bus_read(pc + 1), bus_read(pc + 2), ctx.regs.a, flags, ctx.regs.b, ctx.regs.c, 
