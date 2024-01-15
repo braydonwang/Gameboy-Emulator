@@ -44,6 +44,153 @@ void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
     }
 }
 
+// lookup table for register types
+reg_type rt_lookup[] = {
+    RT_B,
+    RT_C,
+    RT_D,
+    RT_E,
+    RT_H,
+    RT_L,
+    RT_HL,
+    RT_A
+};
+
+// lookup the register type
+reg_type decode_reg(u8 reg) {
+    if (reg > 0b111) { // 0b111 for the last three bits
+        return RT_NONE;
+    }
+
+    return rt_lookup[reg];
+}
+
+// bitwise operations
+// decode second byte that comes after the cb instr
+static void proc_cb(cpu_context *ctx) { // reference prefix CB table
+    u8 op = ctx->fetched_data;
+    reg_type reg = decode_reg(op & 0b111);
+    u8 bit = (op >> 3) & 0b111; // mask last three bits
+    u8 bit_op = (op >> 6) & 0b11; // mask last two bits
+    u8 reg_val = cpu_read_reg8(reg);
+
+    emu_cycles(1);
+
+    if (reg == RT_HL) {
+        emu_cycles(2);
+    }
+
+    switch (bit_op) {
+    case 1: // BIT
+        cpu_set_flags(ctx, !(reg_val & (1 << bit)), 0, 1, -1);
+        return;
+
+    case 2: // RST - reset
+        reg_val &= ~(1 << bit);
+        cpu_set_reg8(reg, reg_val);
+        return;
+
+    case 3: // SET
+        reg_val |= (1 << bit);
+        cpu_set_reg8(reg, reg_val);
+        return;
+    }
+
+    bool flagC = CPU_FLAG_C;
+
+    switch (bit) {
+
+        case 0: { // RLC rotate left, old bit 7 to the carry flag
+            bool setC = false;
+            u8 result = (reg_val << 1) & 0xFF;
+
+            if ((reg_val & (1 << 7)) != 0) {
+                result |= 1;
+                setC = true;
+            }
+            cpu_set_reg8(reg, result);
+            cpu_set_flags(ctx, result == 0, false, false, setC);
+        } return;
+    
+        case 1: { // RRC - rotate right, carry is what used to be the LSB
+            u8 old = reg_val;
+            reg_val >>= 1;
+            reg_val |= (old << 7);
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(ctx, !reg_val, false, false, old & 1); // old & 1 - whether carry flag used
+        } return;
+
+        case 2: { // RL - rotate left
+            u8 old = reg_val;
+            reg_val <<= 1;
+            reg_val |= flagC;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(ctx, !reg_val, false, false, !!(old & 0x80)); // !!(old & 0x80) - if high bit set
+        } return;
+
+        case 3: { // RR - rotate right
+        u8 old = reg_val;
+            reg_val >>= 1;
+            reg_val |= (flagC << 7);
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(ctx, !reg_val, false, false, old & 1);
+        } return;
+
+        case 4: { // SLA - shift left and carry, lsb set to 0
+            u8 old = reg_val;
+            reg_val <<= 1;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(ctx, !reg_val, false, false, !!(old & 0x80));
+        } return;
+
+        case 5: { // SRA - shift right and carry, msb doesn't change
+            u8 u = (int8_t) reg_val >> 1;
+            cpu_set_reg8(reg, u);
+            cpu_set_flags(ctx, !u, 0, 0, reg_val & 1);
+        } return;
+
+        case 6: { // SWAP - high nibble swap with low nibble
+            reg_val = ((reg_val & 0xF0) >> 4) | ((reg_val & 0xF) << 4);
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(ctx, reg_val == 0, false, false, false);
+        } return;
+
+        case 7: { // SRL - shift right and carry, msb set to 0
+            u8 u = reg_val >> 1;
+            cpu_set_reg8(reg, u);
+            cpu_set_flags(ctx, !u, 0, 0, reg_val & 1);
+        } return;
+
+    }
+    fprintf(stderr, "ERROR: INVALID CB: %02X", op);
+    NO_IMPL
+}
+
+static void proc_and(cpu_context *ctx) {
+    ctx->regs.a &= ctx->fetched_data;
+    cpu_set_flags(ctx, ctx->regs.a == 0, 0, 1, 0);
+}
+
+static void proc_xor(cpu_context *ctx) {
+    ctx->regs.a ^= ctx->fetched_data & 0xFF;
+    cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
+}
+
+static void proc_or(cpu_context *ctx) {
+    ctx->regs.a |= ctx->fetched_data & 0xFF;
+    cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
+}
+
+static void proc_cp(cpu_context *ctx) {
+    int n = (int) ctx->regs.a - (int) ctx->fetched_data;
+    cpu_set_flags(ctx, n == 0, 1, 
+        ((int) ctx->regs.a & 0x0F) - ((int) ctx->fetched_data & 0x0F) < 0, n < 0);
+}
+
 // Load instruction
 static void proc_ld(cpu_context *ctx) {
     if (ctx->dest_is_mem) {
@@ -83,12 +230,6 @@ static void proc_ldh(cpu_context *ctx) {
     }
 
     emu_cycles(1);
-}
-
-// XOR instruction
-static void proc_xor(cpu_context *ctx) {
-    ctx->regs.a ^= ctx->fetched_data & 0xFF;    // XOR reg A and fetched data
-    cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);   // sets flags to (Z 0 0 0)
 }
 
 // Returns bool representing if condition is satisfied
@@ -337,7 +478,11 @@ static IN_PROC processors[] = {
     [IN_ADC] = proc_adc,
     [IN_SUB] = proc_sub,
     [IN_SBC] = proc_sbc,
-    [IN_XOR] = proc_xor
+    [IN_AND] = proc_and,
+    [IN_XOR] = proc_xor,
+    [IN_OR] = proc_or,
+    [IN_CP] = proc_cp,
+    [IN_CB] = proc_cb
 };
 
 // Run processor for each instruction type
