@@ -41,6 +41,9 @@ bool cpu_step();
 u16 cpu_read_reg(reg_type rt);
 void cpu_set_reg(reg_type rt, u16 val);
 
+u8 cpu_read_reg8(reg_type rt);
+void cpu_set_reg8(reg_type rt, u8 val);
+
 typedef void (*IN_PROC)(cpu_context *);
 
 IN_PROC inst_get_processor(in_type type);
