@@ -5,6 +5,7 @@
 
 /*
     Processing CPU Instructions
+    Explanations of each instruction can be found here: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7
 */
 
 // None instruction
@@ -26,6 +27,7 @@ static void proc_ei(cpu_context *ctx) {
     ctx->enabling_ime = true;
 }
 
+// Returns true if register type is 16-bit
 static bool is_16_bit(reg_type rt) {
     return rt >= RT_AF;
 }
@@ -176,6 +178,7 @@ static void proc_cb(cpu_context *ctx) {      // reference prefix CB table
 }
 
 // RLCA (Rotate Left A Affect Carry) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#RLCA
 static void proc_rlca(cpu_context *ctx) {
     u8 u = ctx->regs.a;
     bool c = (u >> 7) & 1;
@@ -186,6 +189,7 @@ static void proc_rlca(cpu_context *ctx) {
 }
 
 // RRCA (Rotate Right A Affect Carry) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#RRCA
 static void proc_rrca(cpu_context *ctx) {
     u8 b = ctx->regs.a & 1;
     ctx->regs.a >>= 1;
@@ -195,6 +199,7 @@ static void proc_rrca(cpu_context *ctx) {
 }
 
 // RLA (Rotate Left A) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#RLA
 static void proc_rla(cpu_context *ctx) {
     u8 u = ctx->regs.a;
     u8 cf = CPU_FLAG_C;
@@ -205,6 +210,7 @@ static void proc_rla(cpu_context *ctx) {
 }
 
 // RRA (Rotate Right A) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#RRA
 static void proc_rra(cpu_context *ctx) {
     u8 carry = CPU_FLAG_C;
     u8 new_c = ctx->regs.a & 1;
@@ -222,6 +228,7 @@ static void proc_stop(cpu_context *ctx) {
 }
 
 // DAA (Decimal Adjust Accumulator) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#DAA
 static void proc_daa(cpu_context *ctx) {
     u8 u = 0;
     int fc = 0;
@@ -241,6 +248,7 @@ static void proc_daa(cpu_context *ctx) {
 }
 
 // CPL (Complement Accumulator) instruction
+// Reference: https://rgbds.gbdev.io/docs/v0.7.0/gbz80.7#CPL
 static void proc_cpl(cpu_context *ctx) {
     ctx->regs.a = ~ctx->regs.a;
     cpu_set_flags(ctx, -1, 1, 1, -1);
