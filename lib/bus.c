@@ -44,7 +44,8 @@ u8 bus_read(u16 address) {
         // Object Attribute Memory (OAM)
         // TODO
         printf("UNSUPPORTED bus_read(%04X)\n", address);
-        NO_IMPL
+        //NO_IMPL
+        return 0x0;
     } else if (address < 0xFF00) {
         // Reversed unusable section
         return 0;
@@ -52,7 +53,8 @@ u8 bus_read(u16 address) {
         // I/O Registers
         // TODO
         printf("UNSUPPORTED bus_read(%04X)\n", address);
-        NO_IMPL
+        //NO_IMPL
+        return 0x0;
     } else if (address == 0xFFFF) {
         // Interrupt Enable Register (IE)
         return cpu_get_ie_register();
@@ -71,7 +73,7 @@ void bus_write(u16 address, u8 value) {
         // Character and Map data
         // TODO
         printf("UNSUPPORTED bus_write(%04X)\n", address);
-        NO_IMPL
+        //NO_IMPL
     } else if (address < 0xC000) {
         // Cartridge RAM
         cart_write(address, value);
@@ -84,7 +86,7 @@ void bus_write(u16 address, u8 value) {
         // Object Attribute Memory (OAM)
         // TODO
         printf("UNSUPPORTED bus_write(%04X)\n", address);
-        NO_IMPL
+        //NO_IMPL
     } else if (address < 0xFF00) {
         // Reversed unusable section
     } else if (address < 0xFF80) {
