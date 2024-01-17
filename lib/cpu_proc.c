@@ -49,7 +49,7 @@ void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c) {
     }
 }
 
-// lookup table for register types
+// Lookup table for register types
 reg_type rt_lookup[] = {
     RT_B,
     RT_C,
@@ -61,7 +61,7 @@ reg_type rt_lookup[] = {
     RT_A
 };
 
-// lookup the register type
+// Lookup the register type
 reg_type decode_reg(u8 reg) {
     if (reg > 0b111) { // 0b111 for the last three bits
         return RT_NONE;
@@ -70,13 +70,13 @@ reg_type decode_reg(u8 reg) {
     return rt_lookup[reg];
 }
 
-// bitwise operations
-// decode second byte that comes after the cb instr
-static void proc_cb(cpu_context *ctx) { // reference prefix CB table
+// Bitwise operations
+// Decode second byte that comes after the CB instr
+static void proc_cb(cpu_context *ctx) {      // reference prefix CB table
     u8 op = ctx->fetched_data;
     reg_type reg = decode_reg(op & 0b111);
-    u8 bit = (op >> 3) & 0b111; // mask last three bits
-    u8 bit_op = (op >> 6) & 0b11; // mask last two bits
+    u8 bit = (op >> 3) & 0b111;              // mask last three bits
+    u8 bit_op = (op >> 6) & 0b11;            // mask last two bits
     u8 reg_val = cpu_read_reg8(reg);
 
     emu_cycles(1);
@@ -152,7 +152,7 @@ static void proc_cb(cpu_context *ctx) { // reference prefix CB table
             cpu_set_flags(ctx, !reg_val, false, false, !!(old & 0x80));
         } return;
 
-        case 5: { // SRA - shift right and carry, msb doesn't change
+        case 5: { // SRA - shift right and carry, MSB doesn't change
             u8 u = (int8_t) reg_val >> 1;
             cpu_set_reg8(reg, u);
             cpu_set_flags(ctx, !u, 0, 0, reg_val & 1);
@@ -175,6 +175,7 @@ static void proc_cb(cpu_context *ctx) { // reference prefix CB table
     NO_IMPL
 }
 
+// RLCA (Rotate Left A Affect Carry) instruction
 static void proc_rlca(cpu_context *ctx) {
     u8 u = ctx->regs.a;
     bool c = (u >> 7) & 1;
@@ -184,6 +185,7 @@ static void proc_rlca(cpu_context *ctx) {
     cpu_set_flags(ctx, 0, 0, 0, c);
 }
 
+// RRCA (Rotate Right A Affect Carry) instruction
 static void proc_rrca(cpu_context *ctx) {
     u8 b = ctx->regs.a & 1;
     ctx->regs.a >>= 1;
@@ -192,6 +194,7 @@ static void proc_rrca(cpu_context *ctx) {
     cpu_set_flags(ctx, 0, 0, 0, b);
 }
 
+// RLA (Rotate Left A) instruction
 static void proc_rla(cpu_context *ctx) {
     u8 u = ctx->regs.a;
     u8 cf = CPU_FLAG_C;
@@ -201,6 +204,7 @@ static void proc_rla(cpu_context *ctx) {
     cpu_set_flags(ctx, 0, 0, 0, c);
 }
 
+// RRA (Rotate Right A) instruction
 static void proc_rra(cpu_context *ctx) {
     u8 carry = CPU_FLAG_C;
     u8 new_c = ctx->regs.a & 1;
@@ -211,11 +215,13 @@ static void proc_rra(cpu_context *ctx) {
     cpu_set_flags(ctx, 0, 0, 0, new_c);
 }
 
+// Stop instruction
 static void proc_stop(cpu_context *ctx) {
     fprintf(stderr, "STOPPING!\n");
     NO_IMPL
 }
 
+// DAA (Decimal Adjust Accumulator) instruction
 static void proc_daa(cpu_context *ctx) {
     u8 u = 0;
     int fc = 0;
@@ -234,38 +240,46 @@ static void proc_daa(cpu_context *ctx) {
     cpu_set_flags(ctx, ctx->regs.a == 0, -1, 0, fc);
 }
 
+// CPL (Complement Accumulator) instruction
 static void proc_cpl(cpu_context *ctx) {
     ctx->regs.a = ~ctx->regs.a;
     cpu_set_flags(ctx, -1, 1, 1, -1);
 }
 
+// SCF (Set Carry Flag) instruction
 static void proc_scf(cpu_context *ctx) {
     cpu_set_flags(ctx, -1, 0, 0, 1);
 }
 
+// CCF (Complement Carry Flag) instruction
 static void proc_ccf(cpu_context *ctx) {
-    cpu_set_flags(ctx, -1, 0, 0, CPU_FLAG_C ^ 1);
+    cpu_set_flags(ctx, -1, 0, 0, CPU_FLAG_C ^ 1);  // invert carry flag
 }
 
+// Halt instruction
 static void proc_halt(cpu_context *ctx) {
     ctx->halted = true;
 }
 
+// AND instruction
 static void proc_and(cpu_context *ctx) {
     ctx->regs.a &= ctx->fetched_data;
     cpu_set_flags(ctx, ctx->regs.a == 0, 0, 1, 0);
 }
 
+// XOR instruction
 static void proc_xor(cpu_context *ctx) {
     ctx->regs.a ^= ctx->fetched_data & 0xFF;
     cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
 }
 
+// OR instruction
 static void proc_or(cpu_context *ctx) {
     ctx->regs.a |= ctx->fetched_data & 0xFF;
     cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
 }
 
+// CP (Compare) instruction
 static void proc_cp(cpu_context *ctx) {
     int n = (int) ctx->regs.a - (int) ctx->fetched_data;
     cpu_set_flags(ctx, n == 0, 1, 
@@ -303,6 +317,7 @@ static void proc_ld(cpu_context *ctx) {
     cpu_set_reg(ctx->cur_inst->reg_1, ctx->fetched_data);
 }
 
+// LDH (Load High) instruction
 static void proc_ldh(cpu_context *ctx) {
     if (ctx->cur_inst->reg_1 == RT_A) {
         cpu_set_reg(ctx->cur_inst->reg_1, bus_read(0xFF00 | ctx->fetched_data));
