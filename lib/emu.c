@@ -2,8 +2,11 @@
 #include <emu.h>
 #include <cart.h>
 #include <cpu.h>
-#include <SDL2/SDL.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <ui.h>
+
+//TODO add windows alternative
+#include <pthread.h>
+#include <unistd.h>
 
 /*
 
@@ -23,9 +26,31 @@ emu_context *emu_get_context() {
     return &ctx;
 }
 
+void *cpu_run(void *p) {
+    // Initialize cpu
+    cpu_init();
 
-void delay(u32 ms) {
-    SDL_Delay(ms);
+    // Setting initial context variables
+    ctx.running = true;
+    ctx.paused = false;
+    ctx.ticks = 0;
+
+    // Main game loop
+    while (ctx.running) {
+        if (ctx.paused) {
+            delay(10);
+            continue;
+        }
+        
+        if (!cpu_step()) {
+            printf("CPU Stopped\n");
+            return 0;
+        }
+
+        ctx.ticks++;
+    }
+
+    return 0;
 }
 
 int emu_run(int argc, char **argv) {
@@ -43,32 +68,21 @@ int emu_run(int argc, char **argv) {
 
     printf("Cart loaded..\n");
 
-    // Initializing graphics and fonts
-    SDL_Init(SDL_INIT_VIDEO);
-    printf("SDL INIT\n");
-    TTF_Init();
-    printf("TTF INIT\n");
+    ui_init();
 
-    cpu_init();
+    // Declare main thread
+    pthread_t t1;
 
-    // Setting initial context variables
-    ctx.running = true;
-    ctx.paused = false;
-    ctx.ticks = 0;
+    // Create main thread to run cpu_run
+    if (pthread_create(&t1, NULL, cpu_run, NULL)) {
+        fprintf(stderr, "FAILED TO START MAIN CPU THREAD!\n");
+        return -1;
+    }
 
-    // Main game loop
-    while (ctx.running) {
-        if (ctx.paused) {
-            delay(10);
-            continue;
-        }
-        
-        if (!cpu_step()) {
-            printf("CPU Stopped\n");
-            return -3;
-        }
-
-        ctx.ticks++;
+    // Constantly loops until die is true
+    while (!ctx.die) {
+        usleep(1000);
+        ui_handle_events();
     }
 
     return 0;
