@@ -49,10 +49,13 @@ bool cpu_step() {
             ctx.regs.f & (1 << 4) ? 'C' : '-'
         );
 
+        char inst[16];
+        inst_to_str(&ctx, inst);
+
         // Current instruction logger
-        printf("%08llX - %04X: %-7s (%02X %02X %02X) A: %02X F: %s BC: %02X%02X DE: %02X%02X HL: %02X%02X\n", 
+        printf("%08llX - %04X: %-12s (%02X %02X %02X) A: %02X F: %s BC: %02X%02X DE: %02X%02X HL: %02X%02X\n", 
             emu_get_context()->ticks,
-            pc, inst_name(ctx.cur_inst->type), ctx.cur_opcode,
+            pc, inst, ctx.cur_opcode,
             bus_read(pc + 1), bus_read(pc + 2), ctx.regs.a, flags, ctx.regs.b, ctx.regs.c, 
             ctx.regs.d, ctx.regs.e, ctx.regs.h, ctx.regs.l);
 
