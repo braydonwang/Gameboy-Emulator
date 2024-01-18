@@ -2,6 +2,7 @@
 #include <cart.h>
 #include <ram.h>
 #include <cpu.h>
+#include <io.h>
 
 /*
     Memory Map Addresses
@@ -52,9 +53,9 @@ u8 bus_read(u16 address) {
     } else if (address < 0xFF80) {
         // I/O Registers
         // TODO
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
+        
         //NO_IMPL
-        return 0x0;
+        return io_read(address);
     } else if (address == 0xFFFF) {
         // Interrupt Enable Register (IE)
         return cpu_get_ie_register();
@@ -92,7 +93,7 @@ void bus_write(u16 address, u8 value) {
     } else if (address < 0xFF80) {
         // I/O Registers
         // TODO
-        printf("UNSUPPORTED bus_write(%04X)\n", address);
+        io_write(address, value);
         // NO_IMPL
     } else if (address == 0xFFFF) {
         // Interrupt Enable Register (IE)
