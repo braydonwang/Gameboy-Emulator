@@ -110,3 +110,7 @@ u8 cpu_get_ie_register() {
 void cpu_set_ie_register(u8 n) {
     ctx.ie_register = n;
 }
+
+void cpu_request_interrupt(interrupt_type t) {
+    ctx.int_flags |= t;
+}
