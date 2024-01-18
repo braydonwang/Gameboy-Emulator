@@ -3,6 +3,7 @@
 #include <cart.h>
 #include <cpu.h>
 #include <ui.h>
+#include <timer.h>
 
 //TODO add windows alternative
 #include <pthread.h>
@@ -27,7 +28,8 @@ emu_context *emu_get_context() {
 }
 
 void *cpu_run(void *p) {
-    // Initialize cpu
+    // Initialize CPU and timer
+    timer_init();
     cpu_init();
 
     // Setting initial context variables
@@ -87,5 +89,10 @@ int emu_run(int argc, char **argv) {
 }
 
 void emu_cycles(int cpu_cycles) {
-    
+    int n = cpu_cycles * 4;
+
+    for (int i = 0; i < n; i++) {
+        ctx.ticks++;
+        timer_tick();
+    }
 }
