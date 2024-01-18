@@ -15,6 +15,7 @@
     "ios": "c",
     "timer.h": "c",
     "ui.h": "c",
-    "interrupts.h": "c"
+    "interrupts.h": "c",
+    "ppu.h": "c"
   }
 }
