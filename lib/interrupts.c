@@ -2,11 +2,13 @@
 #include <stack.h>
 #include <interrupts.h>
 
+// Handle interrupts
 void int_handle(cpu_context *ctx, u16 address) {
     stack_push16(ctx->regs.pc);
     ctx->regs.pc = address;
 }
 
+// Returns true if an interrupt was thrown
 bool int_check(cpu_context *ctx, u16 address, interrupt_type it) {
     if (ctx->int_flags & it && ctx->ie_register & it) {
         int_handle(ctx, address);
@@ -20,6 +22,7 @@ bool int_check(cpu_context *ctx, u16 address, interrupt_type it) {
     return false;
 }
 
+// Handle each interrupt type
 void cpu_handle_interrupts(cpu_context *ctx) {
     if (int_check(ctx, 0x40, IT_VBLANK)) {
 

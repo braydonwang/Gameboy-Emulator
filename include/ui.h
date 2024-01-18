@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UI_H__
+#define __UI_H__
 
 #include <common.h>
 
@@ -7,3 +8,5 @@ static const int SCREEN_HEIGHT = 768;
 
 void ui_init();
 void ui_handle_events();
+
+#endif /* __UI_H__ */
