@@ -12,6 +12,9 @@
     "stdio.h": "c",
     "cpu.h": "c",
     "bus.h": "c",
-    "ios": "c"
+    "ios": "c",
+    "timer.h": "c",
+    "ui.h": "c",
+    "interrupts.h": "c"
   }
 }

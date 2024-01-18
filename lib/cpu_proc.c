@@ -554,7 +554,7 @@ static void proc_add(cpu_context *ctx) {
     if (ctx->cur_inst->reg_1 == RT_SP) {            // stack pointer treated as 8 bit add
         z = 0;
         h = (cpu_read_reg(ctx->cur_inst->reg_1) & 0xF) + (ctx->fetched_data & 0xF) >= 0x10;
-        c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) > 0x100;
+        c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) >= 0x100;
     }
 
     cpu_set_reg(ctx->cur_inst->reg_1, val & 0xFFFF);
