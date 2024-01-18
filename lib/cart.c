@@ -87,6 +87,6 @@ void cart_write(u16 address, u8 value) {
     // ROM only type support, for now...
     
     printf("cart_write(%04X)\n", address);
-    NO_IMPL
+    // NO_IMPL
 }
 

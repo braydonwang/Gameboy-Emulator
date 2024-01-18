@@ -4,6 +4,7 @@
 #include <cpu.h>
 #include <io.h>
 #include <ppu.h>
+#include <dma.h>
 
 /*
     Memory Map Addresses
@@ -42,16 +43,15 @@ u8 bus_read(u16 address) {
         return 0;
     } else if (address < 0xFEA0) {
         // Object Attribute Memory (OAM)
-        ppu_oam_read(address);
-        return 0x0;
+        if (dma_transferring()) {
+            return 0xFF;
+        }
+        return ppu_oam_read(address);
     } else if (address < 0xFF00) {
         // Reversed unusable section
         return 0;
     } else if (address < 0xFF80) {
         // I/O Registers
-        // TODO
-        
-        //NO_IMPL
         return io_read(address);
     } else if (address == 0xFFFF) {
         // Interrupt Enable Register (IE)
@@ -80,14 +80,15 @@ void bus_write(u16 address, u8 value) {
         // Reserved Echo RAM (unusable)
     } else if (address < 0xFEA0) {
         // Object Attribute Memory (OAM)
+        if (dma_transferring()) {
+            return;
+        }
         ppu_oam_write(address, value);
     } else if (address < 0xFF00) {
         // Reversed unusable section
     } else if (address < 0xFF80) {
         // I/O Registers
-        // TODO
         io_write(address, value);
-        // NO_IMPL
     } else if (address == 0xFFFF) {
         // Interrupt Enable Register (IE)
         cpu_set_ie_register(value);
