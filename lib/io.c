@@ -1,6 +1,7 @@
 #include <io.h>
 #include <timer.h>
 #include <cpu.h>
+#include <dma.h>
 
 /*
     Handling Serial Data Transfer (I/O)
@@ -8,6 +9,8 @@
 */
 
 static char serial_data[2];
+
+u8 ly = 0;
 
 u8 io_read(u16 address) {
     if (address == 0xFF01) {
@@ -25,6 +28,10 @@ u8 io_read(u16 address) {
     // Interrupt flag: https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
     if (address == 0xFF0F) {
         return cpu_get_int_flags();
+    }
+
+    if (address == 0xFF44) {
+        return ly++;
     }
 
     printf("UNSUPPORTED bus_read(%04X)\n", address);
@@ -50,6 +57,11 @@ void io_write(u16 address, u8 value) {
     // Interrupt flag: https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
     if (address == 0xFF0F) {
         cpu_set_int_flags(value);
+    }
+
+    if (address == 0xFF46) {
+        dma_start(value);
+        printf("DMA START!\n");
     }
 
     printf("UNSUPPORTED bus_write(%04X)\n", address);

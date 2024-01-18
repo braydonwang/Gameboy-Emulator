@@ -4,6 +4,7 @@
 #include <cpu.h>
 #include <ui.h>
 #include <timer.h>
+#include <dma.h>
 
 //TODO add windows alternative
 #include <pthread.h>
@@ -83,16 +84,20 @@ int emu_run(int argc, char **argv) {
     while (!ctx.die) {
         usleep(1000);
         ui_handle_events();
+
+        ui_update();
     }
 
     return 0;
 }
 
 void emu_cycles(int cpu_cycles) {
-    int n = cpu_cycles * 4;
+     for (int i = 0; i < cpu_cycles; i++) {
+        for (int n = 0; n < 4; n++) {
+            ctx.ticks++;
+            timer_tick();
+        }
 
-    for (int i = 0; i < n; i++) {
-        ctx.ticks++;
-        timer_tick();
+        dma_tick();
     }
 }
