@@ -7,6 +7,9 @@
 
 cpu_context ctx = {0};
 
+// Sets debug mode on or off
+#define CPU_DEBUG 0
+
 // Assigning default values to all registers
 void cpu_init() {
     ctx.regs.pc = 0x100;
@@ -53,6 +56,7 @@ bool cpu_step() {
 
         fetch_data();
 
+#if CPU_DEBUG == 1
         // Current instruction flags
         char flags[16];
         sprintf(flags, "%c%c%c%c", 
@@ -71,6 +75,7 @@ bool cpu_step() {
             pc, inst, ctx.cur_opcode,
             bus_read(pc + 1), bus_read(pc + 2), ctx.regs.a, flags, ctx.regs.b, ctx.regs.c, 
             ctx.regs.d, ctx.regs.e, ctx.regs.h, ctx.regs.l);
+#endif
 
         if (ctx.cur_inst == NULL) {
             printf("Unknown Instruction! %02X\n", ctx.cur_opcode);
