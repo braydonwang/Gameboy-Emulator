@@ -86,4 +86,7 @@ u8 ppu_vram_read(u16 address);
 
 ppu_context *ppu_get_context();
 
+void pipeline_fifo_reset();
+void pipeline_process();
+
 #endif /* __PPU_H__ */

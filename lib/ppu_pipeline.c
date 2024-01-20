@@ -1,5 +1,6 @@
 #include <ppu.h>
 #include <lcd.h>
+#include <bus.h>
 
 // Push pixel value to the end of the pipeline
 // Classic linked-list implementation: https://www.geeksforgeeks.org/data-structures/linked-list/
@@ -131,4 +132,12 @@ void pipeline_process() {
     }
 
     pipeline_push_pixel();
+}
+
+void pipeline_fifo_reset() {
+    while (ppu_get_context()->pfc.pixel_fifo.size) {
+        pixel_fifo_pop();
+    }
+
+    ppu_get_context()->pfc.pixel_fifo.head = 0;
 }
