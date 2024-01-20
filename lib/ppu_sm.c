@@ -20,16 +20,30 @@ void increment_ly() {
 }
 
 void ppu_mode_oam() {
-    // Change ppu mode
+    // Change PPU mode
     if (ppu_get_context()->line_ticks >= 80) {
         LCDS_MODE_SET(MODE_XFER);
+
+        // Initialize pixel FIFO context
+        ppu_get_context()->pfc.cur_fetch_state = FS_TILE;
+        ppu_get_context()->pfc.line_x = 0;
+        ppu_get_context()->pfc.fetch_x = 0;
+        ppu_get_context()->pfc.pushed_x = 0;
+        ppu_get_context()->pfc.fifo_x = 0;
     }
 }
 
 void ppu_mode_xfer() {
-    // Change ppu mode
-    if (ppu_get_context()->line_ticks >= 80 + 172) {
+    pipeline_process();
+
+    // Change PPU mode if pushed pixels exceeds X resolution
+    if (ppu_get_context()->pfc.pushed_x >= XRES) {
+        pipeline_fifo_reset();
         LCDS_MODE_SET(MODE_HBLANK);
+
+        if (LCDS_STAT_INT(SS_HBLANK)) {
+            cpu_request_interrupt(IT_LCD_STAT);
+        }
     }
 }
 
