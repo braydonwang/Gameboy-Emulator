@@ -20,6 +20,9 @@ typedef uint64_t u64;
 // Checks if value of a is between b and c
 #define BETWEEN(a, b, c) ((a >= b) && (a <= c))
 
+// Gets current ticks
+u32 get_ticks();
+
 void delay(u32 ms);
 
 #define NO_IMPL { fprintf(stderr, "NOT YET IMPLEMENTED\n"); exit(-5); }

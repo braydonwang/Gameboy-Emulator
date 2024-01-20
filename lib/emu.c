@@ -5,6 +5,7 @@
 #include <ui.h>
 #include <timer.h>
 #include <dma.h>
+#include <ppu.h>
 
 //TODO add windows alternative
 #include <pthread.h>
@@ -32,6 +33,7 @@ void *cpu_run(void *p) {
     // Initialize CPU and timer
     timer_init();
     cpu_init();
+    ppu_init();
 
     // Setting initial context variables
     ctx.running = true;
@@ -80,12 +82,18 @@ int emu_run(int argc, char **argv) {
         return -1;
     }
 
+    u32 prev_frame = 0;
+
     // Constantly loops until die is true
     while (!ctx.die) {
         usleep(1000);
         ui_handle_events();
 
-        ui_update();
+        // Only update UI when frame changes to save time
+        if (prev_frame != ppu_get_context()->current_frame) {
+            ui_update();
+        }
+        prev_frame = ppu_get_context()->current_frame;
     }
 
     return 0;
@@ -96,6 +104,7 @@ void emu_cycles(int cpu_cycles) {
         for (int n = 0; n < 4; n++) {
             ctx.ticks++;
             timer_tick();
+            ppu_tick();
         }
 
         dma_tick();
