@@ -63,7 +63,7 @@ void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, i
         u8 b1 = bus_read(startLocation + (tileNum * 16) + tileY); // byte 1
         u8 b2 = bus_read(startLocation + (tileNum * 16) + tileY + 1); // byte 2
 
-        for (int bit = 7; bit >= 0; bit--) { // loop through each bits backwards
+        for (int bit = 7; bit >= 0; bit--) { // loop through each bit backwards
             u8 hi = !!(b1 & (1 << bit)) << 1;
             u8 lo = !!(b2 & (1 << bit));
 
