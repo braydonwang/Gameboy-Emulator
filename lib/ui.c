@@ -123,6 +123,7 @@ void ui_update() {
 
     u32 *video_buffer = ppu_get_context()->video_buffer;
 
+    // Draw rectangle onto screen using current pixel from video buffer
     for (int line_num = 0; line_num < YRES; line_num++) {
         for (int x = 0; x < XRES; x++) {
             rc.x = x * scale;

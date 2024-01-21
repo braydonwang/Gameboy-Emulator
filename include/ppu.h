@@ -8,37 +8,41 @@ static const int TICKS_PER_LINE = 456;
 static const int YRES = 144;
 static const int XRES = 160;
 
+// 5 different states of pixel fetcher
+// Reference: https://gbdev.io/pandocs/pixel_fifo.html#fifo-pixel-fetcher
 typedef enum {
-    FS_TILE,
-    FS_DATA0,
-    FS_DATA1,
-    FS_IDLE,
-    FS_PUSH
+    FS_TILE,                        // get tile
+    FS_DATA0,                       // get data low
+    FS_DATA1,                       // get data high
+    FS_IDLE,                        // sleep/idle
+    FS_PUSH                         // push pixels
 } fetch_state;
 
+// Single entry of FIFO pipeline
 typedef struct _fifo_entry {
-    struct _fifo_entry *next;   // pointer to next entry
-    u32 value;                  // 32 bit color value
+    struct _fifo_entry *next;       // pointer to next entry
+    u32 value;                      // 32 bit color value
 } fifo_entry;
 
+// FIFO pipeline structure resembling a linked-list
 typedef struct {
-    fifo_entry *head;
-    fifo_entry *tail;
+    fifo_entry *head;               // start of pipeline
+    fifo_entry *tail;               // end of pipeline
     u32 size;
 } fifo;
 
 typedef struct {
-    fetch_state cur_fetch_state;
-    fifo pixel_fifo;
-    u8 line_x;
-    u8 pushed_x;
-    u8 fetch_x;
-    u8 bgw_fetch_data[3];
+    fetch_state cur_fetch_state;    // current pixel fetch state
+    fifo pixel_fifo;                // fifo pipeline structure
+    u8 line_x;                      // x coordinate of current scanline
+    u8 pushed_x;                    // x coordinate of pushed pixel
+    u8 fetch_x;                     // x coordinate of fetched pixel
+    u8 bgw_fetch_data[3];           // fetched background pixels
     u8 fetch_entry_data[6];         // OAM data
-    u8 map_x;
-    u8 map_y;
-    u8 tile_y;
-    u8 fifo_x;
+    u8 map_x;                       // x coordinate of tilemap
+    u8 map_y;                       // y coordinate of tilemap
+    u8 tile_y;                      // y coordinate of object tile
+    u8 fifo_x;                      // x coordinate of fifo pipeline
 } pixel_fifo_context;
 
 typedef struct {
@@ -46,27 +50,27 @@ typedef struct {
     u8 x;
     u8 tile;
 
-    unsigned f_cgb_pn : 3; // coloured game boy palette number, 3 bits
-    unsigned f_cgb_vram_bank : 1; // tile vram number
-    unsigned f_pn : 1; // palette number
-    unsigned f_x : 1; // should sprite be flipped
-    unsigned f_y : 1; // should sprite be flipped
-    unsigned f_bgp : 1; // background priority
+    unsigned f_cgb_pn : 3;          // coloured game boy palette number, 3 bits
+    unsigned f_cgb_vram_bank : 1;   // tile vram number
+    unsigned f_pn : 1;              // palette number
+    unsigned f_x : 1;               // should sprite be flipped
+    unsigned f_y : 1;               // should sprite be flipped
+    unsigned f_bgp : 1;             // background priority
 
 } oam_entry;
 
 /*
- Bit7   BG and Window over OBJ (0=No, 1=BG and Window colors 1-3 over the OBJ)
- Bit6   Y flip          (0=Normal, 1=Vertically mirrored)
- Bit5   X flip          (0=Normal, 1=Horizontally mirrored)
- Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)
- Bit3   Tile VRAM-Bank  **CGB Mode Only**     (0=Bank 0, 1=Bank 1)
- Bit2-0 Palette number  **CGB Mode Only**     (OBP0-7)
+    Bit7   BG and Window over OBJ (0=No, 1=BG and Window colors 1-3 over the OBJ)
+    Bit6   Y flip          (0=Normal, 1=Vertically mirrored)
+    Bit5   X flip          (0=Normal, 1=Horizontally mirrored)
+    Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)
+    Bit3   Tile VRAM-Bank  **CGB Mode Only**     (0=Bank 0, 1=Bank 1)
+    Bit2-0 Palette number  **CGB Mode Only**     (OBP0-7)
  */
 
 typedef struct {
     oam_entry oam_ram[40];
-    u8 vram[0x2000];    // video ram
+    u8 vram[0x2000];                // video ram
 
     pixel_fifo_context pfc;
 

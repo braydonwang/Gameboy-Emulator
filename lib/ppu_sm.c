@@ -41,6 +41,7 @@ void ppu_mode_xfer() {
         pipeline_fifo_reset();
         LCDS_MODE_SET(MODE_HBLANK);
 
+        // Check if STAT interrupt is set
         if (LCDS_STAT_INT(SS_HBLANK)) {
             cpu_request_interrupt(IT_LCD_STAT);
         }

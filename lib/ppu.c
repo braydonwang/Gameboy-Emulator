@@ -15,6 +15,7 @@ void ppu_init() {
     // Allocate space for video buffer
     ctx.video_buffer = malloc(YRES * XRES * sizeof(32));
 
+    // Initialize pixel FIFO pipeline
     ctx.pfc.line_x = 0;
     ctx.pfc.pushed_x = 0;
     ctx.pfc.fetch_x = 0;
