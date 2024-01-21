@@ -46,7 +46,7 @@ lcd_context *lcd_get_context();
 #define LCDS_MODE_SET(mode) { lcd_get_context()->lcds &= ~0b11; lcd_get_context()->lcds |= mode; }
 
 #define LCDS_LYC (BIT(lcd_get_context()->lcds, 2))
-#define LCDS_LYC_SET(b) (BIT_SET(lcd_get_context()->lcds, 2, b))
+#define LCDS_LYC_SET(b) {BIT_SET(lcd_get_context()->lcds, 2, b)}
 
 typedef enum {
     SS_HBLANK = (1 << 3),
