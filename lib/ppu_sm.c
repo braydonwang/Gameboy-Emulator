@@ -23,13 +23,14 @@ void increment_ly() {
     }
 }
 
+// load all sprites on a given line
 void load_line_sprites() {
     int cur_y = lcd_get_context()->ly;
 
     u8 sprite_height = LCDC_OBJ_HEIGHT;
     memset(ppu_get_context()->line_entry_array, 0, sizeof(ppu_get_context()->line_entry_array));
 
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 40; i++) { // each of 40 oam entries
         oam_entry e = ppu_get_context()->oam_ram[i];
 
         if (!e.x) {
@@ -55,13 +56,13 @@ void load_line_sprites() {
                 continue;
             }
 
-            // sorting
+            // sorting, otherwise some sprites will not render properly
             oam_line_entry *le = ppu_get_context()->line_sprites;
             oam_line_entry *prev = le;
 
             while (le) {
                 if (le->entry.x > e.x) {
-                    prev->next = entry;
+                    prev->next = entry; // put at end of the linked list
                     entry->next = le;
                     break;
                 }

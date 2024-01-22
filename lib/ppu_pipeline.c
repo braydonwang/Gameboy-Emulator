@@ -48,17 +48,17 @@ u32 fetch_sprite_pixels(int bit, u32 color, u8 bg_color) {
             continue;
         }
 
-        int offset = ppu_get_context()->pfc.fifo_x - sp_x;
+        int offset = ppu_get_context()->pfc.fifo_x - sp_x; // where the pixel will go
 
         if (offset < 0 || offset > 7) {
             // out of bounds
             continue;
         }
 
-        bit = (7 - offset);
+        bit = (7 - offset); // current bit we're working on, going in reverse order
 
-        if (ppu_get_context()->fetched_entries[i].f_x) {
-            bit = offset;
+        if (ppu_get_context()->fetched_entries[i].f_x) { // flipped on the x-axis
+            bit = offset; // mirror
         }
 
         u8 hi = !!(ppu_get_context()->pfc.fetch_entry_data[i * 2] & (1 << bit));
@@ -100,10 +100,12 @@ bool pipeline_fifo_add() {
         u32 color = lcd_get_context()->bg_colors[hi | lo];
 
         if (!LCDC_BGW_ENABLE) {
+            // if background not enabled, grab the very first colour
             color = lcd_get_context()->bg_colors[0];
         }
 
         if (LCDC_OBJ_ENABLE) {
+            // look up colour
             color = fetch_sprite_pixels(bit, color, hi | lo);
         }
 
@@ -179,6 +181,7 @@ void pipeline_fetch() {
                 }
             }
 
+            // Check if sprites are enabled
             if (LCDC_OBJ_ENABLE && ppu_get_context()->line_sprites) {
                 pipeline_load_sprite_tile();
             }
