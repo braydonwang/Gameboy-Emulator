@@ -68,11 +68,23 @@ typedef struct {
     Bit2-0 Palette number  **CGB Mode Only**     (OBP0-7)
  */
 
+typedef struct _oam_line_entry {
+    oam_entry entry;
+    struct _oam_line_entry *next;
+} oam_line_entry;
+
 typedef struct {
     oam_entry oam_ram[40];
     u8 vram[0x2000];                // video ram
 
     pixel_fifo_context pfc;
+
+    u8 line_sprite_count; // 0 to 10 sprites
+    oam_line_entry *line_sprites; // linked list of current sprites on line
+    oam_line_entry line_entry_array[10]; // memory to use for list, so we don't need to call malloc and free repeatedly
+
+    u8 fetched_entry_count; // for the fifo fetching process
+    oam_entry fetched_entries[3]; // entries fetched during pipeline, fetch 3 entries per section of pixels in the fifo
 
     u32 current_frame;
     u32 line_ticks;
