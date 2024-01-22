@@ -85,6 +85,7 @@ typedef struct {
 
     u8 fetched_entry_count; // for the fifo fetching process
     oam_entry fetched_entries[3]; // entries fetched during pipeline, fetch 3 entries per section of pixels in the fifo
+    u8 window_line;     // current line on the window
 
     u32 current_frame;
     u32 line_ticks;

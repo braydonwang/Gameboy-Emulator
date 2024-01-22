@@ -2,6 +2,13 @@
 #include <lcd.h>
 #include <bus.h>
 
+// Check if window is visible
+bool window_visible() {
+    return LCDC_WIN_ENABLE && lcd_get_context()->win_x >= 0 &&
+        lcd_get_context()->win_x <= 166 && lcd_get_context()->win_y >= 0 &&
+        lcd_get_context()->win_y < YRES;
+}
+
 // Push pixel value to the end of the pipeline
 // Classic linked-list implementation: https://www.geeksforgeeks.org/data-structures/linked-list/
 void pixel_fifo_push(u32 value) {
@@ -162,6 +169,30 @@ void pipeline_load_sprite_data(u8 offset) {
     }
 }
 
+void pipeline_load_window_tile() {
+    // Skip loading window tile if window is not visible
+    if (!window_visible()) {
+        return;
+    }
+
+    u8 window_y = lcd_get_context()->win_y;
+
+    if (ppu_get_context()->pfc.fetch_x + 7 >= lcd_get_context()->win_x &&
+            ppu_get_context()->pfc.fetch_x + 7 < lcd_get_context()->win_x + YRES + 14) {
+                if (lcd_get_context()->ly >= window_y && lcd_get_context()->ly < window_y + XRES) {
+                    u8 w_tile_y = ppu_get_context()->window_line / 8;
+
+                    ppu_get_context()->pfc.bgw_fetch_data[0] = bus_read(LCDC_WIN_MAP_AREA +
+                        ((ppu_get_context()->pfc.fetch_x + 7 - lcd_get_context()->win_x) / 8) +
+                        (w_tile_y * 32));
+
+                    if (LCDC_BGW_DATA_AREA == 0x8800) {
+                        ppu_get_context()->pfc.bgw_fetch_data[0] += 128;
+                    }
+                }
+        }
+}
+
 // Fetch pixel depending on current state
 void pipeline_fetch() {
     switch (ppu_get_context()->pfc.cur_fetch_state) {
@@ -179,6 +210,8 @@ void pipeline_fetch() {
                 if (LCDC_BGW_DATA_AREA == 0x8800) {
                     ppu_get_context()->pfc.bgw_fetch_data[0] += 128;  // increment tile id
                 }
+
+                pipeline_load_window_tile();
             }
 
             // Check if sprites are enabled
