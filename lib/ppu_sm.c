@@ -6,8 +6,15 @@
 
 void pipeline_fifo_reset();
 void pipeline_process();
+bool window_visible();
 
 void increment_ly() {
+    // Increment window line if window is visible
+    if (window_visible() && lcd_get_context()->ly >= lcd_get_context()->win_y &&
+        lcd_get_context()->ly < lcd_get_context()->win_y + YRES) {
+            ppu_get_context()->window_line++;
+        }
+
     // Increment ly
     lcd_get_context()->ly++;
 
@@ -126,6 +133,7 @@ void ppu_mode_vblank() {
             LCDS_MODE_SET(MODE_OAM);
             // Reset ly
             lcd_get_context()->ly = 0;
+            ppu_get_context()->window_line = 0;
         }
 
         // Reset ticks

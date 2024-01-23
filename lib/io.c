@@ -3,6 +3,7 @@
 #include <cpu.h>
 #include <dma.h>
 #include <lcd.h>
+#include <gamepad.h>
 
 /*
     Handling Serial Data Transfer (I/O)
@@ -12,6 +13,10 @@
 static char serial_data[2];
 
 u8 io_read(u16 address) {
+    if (address == 0xFF00) {
+        return gamepad_get_output();
+    }
+
     if (address == 0xFF01) {
         return serial_data[0];
     }
@@ -38,6 +43,11 @@ u8 io_read(u16 address) {
 }
 
 void io_write(u16 address, u8 value) {
+    if (address == 0xFF00) {
+        gamepad_set_sel(value);
+        return;
+    }
+
     if (address == 0xFF01) {
         serial_data[0] = value;
         return;
