@@ -144,11 +144,85 @@ void cart_battery_save() {
 }
 
 u8 cart_read(u16 address) {
-    return ctx.rom_data[address];
+    if (address < 0x4000) {
+        return ctx.rom_data[address];
+    }
+
+    if (!cart_mbc1()) {
+        return 0xFF;
+    }
+
+    // Check if address is in the range A000-BFFF (RAM bank)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#a000bfff--ram-bank-0003-if-any
+    if ((address & 0xE000) == 0xA000) {
+        if (!ctx.ram_enabled || !ctx.ram_bank) {
+            return 0xFF;
+        }
+
+        return ctx.ram_bank[address - 0xA000];
+    }
+
+    return ctx.rom_bank_x[address - 0x4000];
 }
 
 void cart_write(u16 address, u8 value) {
-    printf("cart_write(%04X)\n", address);
-    // NO_IMPL
+    if (!cart_mbc1()) {
+        return;
+    }
+
+    // Check if address is in the range 0000-1FFF (RAM enable)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#00001fff--ram-enable-write-only
+    if (address < 0x2000) {
+        ctx.ram_enabled = ((value & 0xF) == 0xA);    // any value with 0xA in lower 4 bits enables RAM
+    }
+
+    // Check if address is in the range 2000-3FFF (ROM bank number)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#20003fff--rom-bank-number-write-only
+    if ((address & 0xE000) == 0x2000) {
+        if (value == 0) {
+            value = 1;                              // if register set to 0, it behaves as if set to 1
+        }
+
+        value &= 0b11111;
+        ctx.rom_bank_value = value;
+        ctx.rom_bank_x = ctx.rom_data + (0x4000 * ctx.rom_bank_value);
+    }
+
+    // Check if address is in the range 4000-5FFF (RAM bank number)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#40005fff--ram-bank-number--or--upper-bits-of-rom-bank-number-write-only
+    if ((address & 0xE000) == 0x4000) {
+        ctx.ram_bank_value = value & 0b11;
+
+        // Check if RAM banking is enabled
+        if (ctx.ram_banking) {
+            ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
+        }
+    }
+
+    // Check if address is in the range 6000-7FFF (Banking Mode Select)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#60007fff--banking-mode-select-write-only
+    if ((address & 0xE000) == 0x6000) {
+        ctx.banking_mode = value & 1;
+        ctx.ram_banking = ctx.banking_mode;
+
+        // Check if RAM banking is enabled
+        if (ctx.ram_banking) {
+            ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
+        }
+    }
+
+    // Check if address is in the range A000-BFFF (RAM bank)
+    // Reference: https://gbdev.io/pandocs/MBC1.html#a000bfff--ram-bank-0003-if-any
+    if ((address & 0xE000) == 0xA000) {
+        if (!ctx.ram_enabled || !ctx.ram_bank) {
+            return;
+        }
+
+        ctx.ram_bank[address - 0xA000] = value;
+
+        if (ctx.battery) {
+            ctx.need_save = true;
+        }
+    }
 }
 
