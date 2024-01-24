@@ -195,6 +195,9 @@ void cart_write(u16 address, u8 value) {
 
         // Check if RAM banking is enabled
         if (ctx.ram_banking) {
+            if (cart_need_save()) {
+                cart_battery_save();            // save battery when switching RAM banks
+            }
             ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
         }
     }
@@ -207,6 +210,9 @@ void cart_write(u16 address, u8 value) {
 
         // Check if RAM banking is enabled
         if (ctx.ram_banking) {
+            if (cart_need_save()) {
+                cart_battery_save();            // save battery when switching RAM banks
+            }
             ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
         }
     }
