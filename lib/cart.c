@@ -136,20 +136,36 @@ bool cart_load(char *cart) {
 }
 
 void cart_battery_load() {
+    char fn[1048];
+    sprintf(fn, "%s.battery", ctx.filename);
+    FILE *fp = fopen(fn, "rb");
 
+    if (!fp) {
+        fprintf(stderr, "FAILED TO OPEN: %s\n", fn);
+        return;
+    }
+
+    fread(ctx.ram_bank, 0x2000, 1, fp);
+    fclose(fp);
 }
 
 void cart_battery_save() {
+    char fn[1048];
+    sprintf(fn, "%s.battery", ctx.filename);
+    FILE *fp = fopen(fn, "wb");
 
+    if (!fp) {
+        fprintf(stderr, "FAILED TO OPEN: %s\n", fn);
+        return;
+    }
+
+    fwrite(ctx.ram_bank, 0x2000, 1, fp);
+    fclose(fp);
 }
 
 u8 cart_read(u16 address) {
-    if (address < 0x4000) {
+    if (!cart_mbc1() || address < 0x4000) {
         return ctx.rom_data[address];
-    }
-
-    if (!cart_mbc1()) {
-        return 0xFF;
     }
 
     // Check if address is in the range A000-BFFF (RAM bank)

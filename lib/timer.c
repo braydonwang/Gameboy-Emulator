@@ -75,4 +75,5 @@ u8 timer_read(u16 address) {
         case 0xFF07:
             return ctx.tac;
     }
+    return 0;
 }
