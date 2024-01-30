@@ -16,6 +16,7 @@
     "timer.h": "c",
     "ui.h": "c",
     "interrupts.h": "c",
-    "ppu.h": "c"
+    "ppu.h": "c",
+    "gamepad.h": "c"
   }
 }

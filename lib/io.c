@@ -34,6 +34,11 @@ u8 io_read(u16 address) {
         return cpu_get_int_flags();
     }
 
+    // Ignoring audio for now...
+    if (BETWEEN(address, 0xFF10, 0xFF3F)) {
+        return 0;
+    }
+
     if (BETWEEN(address, 0xFF40, 0xFF4B)) {
         return lcd_read(address);
     }
@@ -66,6 +71,12 @@ void io_write(u16 address, u8 value) {
     // Interrupt flag: https://gbdev.io/pandocs/Interrupts.html#ff0f--if-interrupt-flag
     if (address == 0xFF0F) {
         cpu_set_int_flags(value);
+        return;
+    }
+
+    // Ignoring audio for now...
+    if (BETWEEN(address, 0xFF10, 0xFF3F)) {
+        return;
     }
 
     if (BETWEEN(address, 0xFF40, 0xFF4B)) {

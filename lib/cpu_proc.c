@@ -224,7 +224,6 @@ static void proc_rra(cpu_context *ctx) {
 // Stop instruction
 static void proc_stop(cpu_context *ctx) {
     fprintf(stderr, "STOPPING!\n");
-    NO_IMPL
 }
 
 // DAA (Decimal Adjust Accumulator) instruction
