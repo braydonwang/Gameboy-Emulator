@@ -35,25 +35,42 @@ As performance is a key consideration for emulation projects, emulators are ofte
 
 <!-- GETTING STARTED -->
 
+### References
+- All-in-one comprehensive Gameboy development manual: https://gbdev.io/pandocs/
+- Gameboy CPU instruction set: https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+- Collection of Gameboy ROMs for testing: https://github.com/retrio/gb-test-roms
+- Test for Gameboy pixel processing unit (PPU): https://github.com/mattcurrie/dmg-acid2
+- List of popular Gameboy ROMs to download for free: https://www.emulatorgames.net/roms/gameboy/
+
 ## Getting Started
 
 What are the steps to run this project locally?
 
-1.
-2.
-3.
+1. Clone this repository
+2. Install the following dependencies (Mac vs. Windows)
+3. Verify that it works by running the tests
 4.
 5.
 6.
 
 ## Inside Look
 
-What are some pictures/images we can show of the end result?
+**1. Legends of Zelda**
+
+<img width="1512" alt="image" src="https://github.com/braydonwang/Gameboy-Emulator/assets/16049357/850b8295-a586-40c4-a3ad-3fe9343fcc9d">
+
+
+**2. Super Mario Land**
+
+**3. Tetris**
+
+<img width="1512" alt="image" src="https://github.com/braydonwang/Gameboy-Emulator/assets/16049357/5da06906-e20e-46ec-b52e-92e7126532cd">
+
 
 ## Next Steps
 
-- [x] Done
-- [x] Done
-- [ ] To-be done
-- [ ] To-be done
-- [ ] To-be done
+- [x] Add support for cartridge battery to allow saving game state
+- [x] Provide detailed documentation to important parts of the code
+- [ ] Add support for audio components
+- [ ] Look into supporting other MBC mappers
+- [ ] Look into supporting Gameboy Color registers (CGB)
