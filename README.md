@@ -12,11 +12,11 @@
 ## About The Project
 **What's an emulator?**
 
-An emulator is a software program or hardware device that allows one computer system to behave like another computer system. In simpler terms, an emulator is like a magical translator for your computer to "imitate" the functions of another system. An emulator needs to understand the inner workings of the guest system in order to _trick_ the software into thinking it's running on the actual system. They're commonly used for running old software on new hardware, or in our case, playing games from older consoles on modern devices. 
+An emulator is a software program or hardware device that allows one computer system to **behave** like another computer system. In simpler terms, an emulator is like a magical **translator** for your computer to "imitate" the functions of another system. An emulator needs to understand the inner workings of the guest system in order to _trick_ the software into thinking it's running on the actual system. They're commonly used for running old software on new hardware, or in our case, playing games from older consoles on modern devices. 
 
 **Why build a Gameboy Emulator?**
 
-Gameboy's have always been a staple in handheld gaming devices played and loved by millions of people worldwide. Although we were born in a generation that has Nintendo Switches and PlayStations, we still want to know what it's like to have owned a Nintendo Gameboy. Low-level programming was also something that we were all interested and curious to learn about at the time. Building a Gameboy Emulator not only teaches about the Gameboy itself, but also gives a glimpse into computer architecture and how computers operate in general. 
+Gameboy's have always been a staple in handheld gaming devices played and loved by millions of people worldwide. Although we were born in a generation that has Nintendo Switches and PlayStations, we still want to know what it's like to have owned a Nintendo Gameboy. **Low-level programming** was also something that we were all interested and curious to learn about at the time. Building a Gameboy Emulator not only teaches about the Gameboy itself, but also gives a glimpse into **computer architecture** and how computers operate in general. 
 
 ### Features:
 
@@ -28,7 +28,7 @@ Gameboy's have always been a staple in handheld gaming devices played and loved 
 
 ### Built With
 
-As performance is a key consideration for emulation projects, emulators are often written in low-level languages. C is a low-level language that allows developers to write highly-performant code, is easily portable, and provides direct access to system resources like memory. It's also a language that all of us learned in school and are fairly comfortable with.
+As **performance** is a key consideration for emulation projects, emulators are often written in low-level languages. C is a low-level language that allows developers to write highly-performant code, is easily portable, and provides direct access to system resources like memory. It's also a language that all of us learned in school and are fairly comfortable with.
 
 - ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
 - ![CMake](https://img.shields.io/badge/CMake-%23008FBA.svg?style=for-the-badge&logo=cmake&logoColor=white)
@@ -43,15 +43,42 @@ As performance is a key consideration for emulation projects, emulators are ofte
 - List of popular Gameboy ROMs to download for free: https://www.emulatorgames.net/roms/gameboy/
 
 ## Getting Started
-
-What are the steps to run this project locally?
-
 1. Clone this repository
-2. Install the following dependencies (Mac vs. Windows)
-3. Verify that it works by running the tests
-4.
-5.
-6.
+```
+git clone https://github.com/braydonwang/Gameboy-Emulator.git
+```
+2. Install the latest versions of the following dependencies:
+```
+- SDL2
+- SDL2-TTF
+- Check
+- build-essentials
+
+* Note that on Mac, instead of using Homebrew to install SDL2 and SDL2-TTF, follow these setup instructions:
+https://www.studyplan.dev/sdl-dev/sdl-setup-mac
+```
+
+3. Create a new 'build' folder in the root directory of the project and navigate to it
+```
+mkdir build
+cd build
+```
+
+4. Run the following command:
+```
+cmake ..
+```
+
+5. Make the project and verify that no errors are thrown
+```
+make
+```
+
+6. Run any of the test ROMs or Gameboy games by specifying its relative path
+```
+gbemu/gbemu ../roms/<FILE_NAME>.gb
+```
+
 
 ## Inside Look
 
@@ -61,6 +88,9 @@ What are the steps to run this project locally?
 
 
 **2. Super Mario Land**
+
+<img width="1504" alt="image" src="https://github.com/braydonwang/Gameboy-Emulator/assets/16049357/8f3609c4-28e4-45f2-923f-d20d8bdb7fe6">
+
 
 **3. Tetris**
 
