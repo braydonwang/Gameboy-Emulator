@@ -4,7 +4,7 @@
 
 
   <h3 align="center">Gameboy Emulator</h3>
-  <p align="center">Experience nostalgia by playing hundreds of beloved classic Nintendo Game Boy games from your own computer</p>
+  <p align="center">Experience nostalgia by playing hundreds of beloved classic Nintendo Gameboy games from your own computer</p>
 </div>
 
 <!-- ABOUT THE PROJECT -->
