@@ -58,7 +58,7 @@ git clone https://github.com/braydonwang/Gameboy-Emulator.git
 https://www.studyplan.dev/sdl-dev/sdl-setup-mac
 ```
 
-3. Create a new 'build' folder in the root directory of the project and navigate to it
+3. Create a new `build` folder in the root directory of the project and navigate to it
 ```
 mkdir build
 cd build
@@ -81,11 +81,11 @@ gbemu/gbemu ../roms/<FILE_NAME>.gb
 
 #### Using the GUI
 
-1. Install gtk+3. If on mac use the command:
+1. Install gtk+3. If you're on Mac, use the following command:
 ```
 brew install gtk+3
 ```
-2. Navigate to the 'lib' folder
+2. Navigate to the `lib` folder
 3. Compile and link using the command:
 ```
 gcc -o gui gui.c \`pkg-config --cflags --libs gtk+-3.0`
