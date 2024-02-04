@@ -88,7 +88,7 @@ brew install gtk+3
 2. Navigate to the `lib` folder
 3. Compile and link using the command:
 ```
-gcc -o gui gui.c \`pkg-config --cflags --libs gtk+-3.0`
+gcc -o gui gui.c `pkg-config --cflags --libs gtk+-3.0`
 ```
 4. Run the executable:
 ```
