@@ -24,7 +24,6 @@ Gameboy's have always been a staple in handheld gaming devices played and loved 
 - Supports MBC1 mapper and cartridge battery to save and reload game states
 - Allows for concurrency through built-in timer class that accounts for CPU cycles
 - Ability to interact with the GUI to load gameboy ROMs from local device
-- 
 
 ### Built With
 
