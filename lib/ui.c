@@ -22,7 +22,7 @@ static int scale = 4;
 void ui_init() {
     
     // Initializing graphics and fonts
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     printf("SDL INIT\n");
     TTF_Init();
     printf("TTF INIT\n");

@@ -5,7 +5,7 @@
 // Function to execute the emulator command
 void run_emulator(const gchar *rom_path) {
     char command[1024];
-    sprintf(command, "../build/gbemu/gbemu \"%s\"", rom_path);
+    sprintf(command, "./build/gbemu/gbemu \"%s\"", rom_path);
     system(command);
 }
 

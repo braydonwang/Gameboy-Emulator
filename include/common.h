@@ -20,6 +20,8 @@ typedef uint64_t u64;
 // Checks if value of a is between b and c
 #define BETWEEN(a, b, c) ((a >= b) && (a <= c))
 
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+
 // Gets current ticks
 u32 get_ticks();
 

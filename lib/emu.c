@@ -6,8 +6,9 @@
 #include <timer.h>
 #include <dma.h>
 #include <ppu.h>
+#include <audio.h>
 
-//TODO add windows alternative
+// TODO: add windows alternative
 #include <pthread.h>
 #include <unistd.h>
 
@@ -72,6 +73,7 @@ int emu_run(int argc, char **argv) {
     printf("Cart loaded..\n");
 
     ui_init();
+    audio_init();
 
     // Declare main thread
     pthread_t t1;
