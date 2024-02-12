@@ -8,6 +8,7 @@ typedef struct {
     bool running;
     bool die;
     u64 ticks;
+    u32 event;
 } emu_context;
 
 int emu_run(int argc, char **argv);
