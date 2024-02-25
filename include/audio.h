@@ -21,7 +21,7 @@ enum {
 
 void audio_init();
 void render_audio();
-void audio_handle_event();
+void audio_handle_event(u32 event);
 
 u32 audio_run_until(u64 until_ticks);
 u32 audio_run_until_ticks(u64 ticks);

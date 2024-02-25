@@ -13,7 +13,7 @@
 #define FRAME_SEQUENCER_TICKS 8192
 #define UNLIKELY(x) __builtin_expect(!!(x), 0)
 #define VALUE_WRAPPED(X, MAX) \
-  (UNLIKELY((X) >= (MAX) ? ((X) -= (MAX), TRUE) : FALSE))
+  (UNLIKELY((X) >= (MAX) ? ((X) -= (MAX), true) : false))
 #define NEXT_MODULO(value, mod) ((mod) - (value) % (mod))
 
 typedef struct {
@@ -195,7 +195,7 @@ void render_audio() {
 
 void audio_handle_event(u32 event) {
     if (event & EMULATOR_EVENT_AUDIO_BUFFER_FULL) {
-        host_render_audio();
+        render_audio();
     }
 }
 
@@ -210,7 +210,7 @@ u16 calculate_sweep_frequency() {
   if (apu.sweep.direction == SWEEP_DIRECTION_ADDITION) {
     return f + (f >> apu.sweep.shift);
   } else {
-    apu.sweep.calculated_subtract = TRUE;
+    apu.sweep.calculated_subtract = true;
     return f - (f >> apu.sweep.shift);
   }
 }
@@ -230,7 +230,7 @@ void update_sweep() {
       } else {
         if (apu.sweep.shift) {
           apu.sweep.frequency = CHANNEL1.frequency = new_frequency;
-          write_square_wave_period(e, &CHANNEL1, &CHANNEL1.square_wave);
+          write_square_wave_period(&CHANNEL1, &CHANNEL1.square_wave);
         }
 
         /* Perform another overflow check. */
@@ -377,7 +377,7 @@ void apu_update_channels(u32 total_frames) {
     frames = MIN(frames, total_frames);
     update_square_wave(&CHANNEL1, frames);
     update_square_wave(&CHANNEL2, frames);
-    update_wave(APU.sync_ticks, frames);
+    update_wave(apu.sync_ticks, frames);
     update_noise(frames);
     write_audio_frame(frames);
     apu.sync_ticks += frames * 2;
@@ -465,6 +465,7 @@ u32 audio_run_until_ticks(u64 ticks) {
     do {
         event = audio_run_until(ticks);
         audio_handle_event(event);
+        printf("HI");
     } while (!(event & (EMULATOR_EVENT_UNTIL_TICKS | EMULATOR_EVENT_BREAKPOINT | EMULATOR_EVENT_INVALID_OPCODE)));
 
     return event;
