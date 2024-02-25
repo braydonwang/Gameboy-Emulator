@@ -1,6 +1,8 @@
 #ifndef __AUDIO_H__
 #define __AUDIO_H__
 
+#include <common.h>
+
 enum {
     EMULATOR_EVENT_NEW_FRAME = 0x1,
     EMULATOR_EVENT_AUDIO_BUFFER_FULL = 0x2,
@@ -27,5 +29,7 @@ u32 audio_run_until_ticks(u64 ticks);
 void apu_update(u32 total_ticks);
 void apu_synchronize();
 void write_audio_frame(u32 gb_frames);
+
+u32 audio_run_ms(double delta_ms);
 
 #endif /* __AUDIO_H__ */

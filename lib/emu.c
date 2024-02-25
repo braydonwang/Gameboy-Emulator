@@ -12,6 +12,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <SDL2/SDL.h>
+
 /*
 
     Emulator components:
@@ -57,6 +59,10 @@ void *cpu_run(void *p) {
     return 0;
 }
 
+double get_monitor_refresh_ms() {
+  return 1000.0 / 60;
+}
+
 int emu_run(int argc, char **argv) {
     // Checks to see if a ROM file is passed in
     if (argc < 2) {
@@ -85,11 +91,13 @@ int emu_run(int argc, char **argv) {
     }
 
     u32 prev_frame = 0;
+    double refresh_ms = get_monitor_refresh_ms();
 
     // Constantly loops until die is true
     while (!ctx.die) {
         usleep(1000);
         ui_handle_events();
+        u32 event = audio_run_ms(refresh_ms);
 
         // Only update UI when frame changes to save time
         if (prev_frame != ppu_get_context()->current_frame) {

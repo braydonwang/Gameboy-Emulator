@@ -18,6 +18,7 @@
     "interrupts.h": "c",
     "ppu.h": "c",
     "gamepad.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "audio.h": "c"
   }
 }
